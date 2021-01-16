@@ -15,3 +15,7 @@ int pop() {
 	return data;
 }
 
+int empty() {
+	return stack.length == 0 ? 1 : 0;
+}
+
