@@ -1,17 +1,39 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <math.h>
 
-int comparator(const void *pa, const void *pb) {
-	double a = *(double*)pa;
-	double b = *(double*)pb;
+// https://www.acmicpc.net/problem/17843 시계 <실버 5>
 
-	if (a < b)
-		return -1;
-	else if (a > b)
-		return 1;
+double calcAngle(double hour, double min, double sec) {
+	min = min + sec / 60;
+	hour = hour * 5 + min / 12;
 
-	return 0;
+	double timeAt[6] = {
+		hour,
+		min,
+		sec,
+		hour + 60,
+		min + 60,
+		sec + 60
+	};
+
+	double result = 60;
+	int i, j;
+	for (i = 0; i < 6; i++) {
+		for (j = 0; j < 6; j++) {
+			if (j == i)
+				continue;
+
+			double tmp = fabs(timeAt[i] - timeAt[j]);
+			if (tmp < result)
+				result = tmp;
+		}
+	}
+
+	result *= 6;
+
+	return result;
 }
+
 
 int main() {
 	int c;
@@ -21,27 +43,7 @@ int main() {
 		double hour, min, sec;
 		scanf("%lf %lf %lf", &hour, &min, &sec);
 
-		min = min + sec / 60;
-		hour = hour * 5 + min / 12;
-
-		double timeAt[3] = {
-			hour,
-			min,
-			sec
-		};
-
-		qsort(timeAt, 3, sizeof(double), comparator);
-
-		double low2mid = timeAt[1] - timeAt[0];
-		double mid2high = timeAt[2] - timeAt[1];
-		printf("%lf %lf\n", low2mid, mid2high);
-		double result;
-		if (low2mid < mid2high)
-			result = low2mid;
-		else
-			result = mid2high;
-
-		result *= 6;
+		double result = calcAngle(hour, min, sec);
 
 		printf("%lf\n", result);
 	}
