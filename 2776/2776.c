@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// https://www.acmicpc.net/problem/2776 암기왕 <실버 3>
+
 int comparator(const void* pa, const void* pb) {
 	const int* a = pa;
 	const int* b = pb;
@@ -14,26 +16,22 @@ int comparator(const void* pa, const void* pb) {
 }
 
 int binarySearch(int* arr, size_t length, int target) {
-	size_t cursor = length / 2;
 	size_t start = 0;
-	size_t end = length;
+	size_t end = length - 1;
 
-	while (1) {
-		if (end - start == 0)
-			return -1;
-		else if (cursor >= length)
-			return start < length && arr[start] == target ? start : -1;
+	while (start <= end) {
+		size_t mid = (start + end) / 2;
+		int* tester = arr + mid;
 
-		int current = arr[cursor];
-		if (target == current)
-			return cursor;
-		else if (target < current)
-			end = cursor;
+		if (*tester == target)
+			return mid;
+		else if (*tester > target) 
+			end = mid - 1;
 		else
-			start = cursor + 1;
-
-		cursor = start + cursor / 2;
+			start = mid + 1;
 	}
+
+	return -1;
 }
 
 int main() {
@@ -51,10 +49,10 @@ int main() {
 
 		qsort(note1, note1_length, sizeof(int), comparator);
 
-		int note2_length;
-		scanf("%d", &note2_length);
+		int t;
+		scanf("%d", &t);
 		int target;
-		for (i = 0; i < note2_length; i++) {
+		while (t--) {
 			scanf("%d", &target);
 
 			if (binarySearch(note1, note1_length, target) >= 0)
