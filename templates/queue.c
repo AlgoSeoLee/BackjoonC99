@@ -2,19 +2,22 @@
 
 typedef struct _Node {
 	int value;
-	int priority;
 	void* next;
 } Node;
 
-void initNode(Node* node, int value, int priority) {
+typedef struct _Queue {
+	Node* start;
+	Node* end;
+} Queue;
+
+void initNode(Node* node, int value) {
 	node->value = value;
-	node->priority = priority;
 	node->next = NULL;
 }
 
-Node* CreateNode(int value, int priority) {
+Node* CreateNode(int value) {
 	Node* node = (Node*)malloc(sizeof(Node));
-	initNode(node, value, priority);
+	initNode(node, value);
 	return node;
 }
 
@@ -31,8 +34,8 @@ void insertNode(Node* list, Node* next) {
 	last->next = node;
 }
 
-Node* insertNodeByValue(Node* list, int value, int priority) {
-	Node* next = CreateNode(value, priority);
+Node* insertNodeByValue(Node* list, int value) {
+	Node* next = CreateNode(value);
 	insertNode(list, node);
 	return next;
 }
@@ -50,12 +53,7 @@ void freeNode(Node* list) {
 	}
 }
 
-void initQueue(Queue* queue) {
-	queue->cur = NULL;
-	queue->end = NULL;
-}
-
-void initQueue(Queue* queue) {
+void QueueInit(Queue* queue) {
 	queue->cur = NULL;
 	queue->end = NULL;
 }
@@ -72,8 +70,8 @@ void QueuePushNode(Queue* queue, Node* node) {
 	queue->end = node;
 }
 
-void QueuePushValue(Queue* queue, int value, int priority) {
-	Node* node = CreateNode(value, priority);
+void QueuePushValue(Queue* queue, int value) {
+	Node* node = CreateNode(value);
 	QueuePushNode(queue, node);
 }
 
@@ -88,8 +86,8 @@ Node* QueuePullNode(Queue* queue) {
 }
 
 void QueueFree(Queue* queue) {
-	freeNode(queue.cur);
-	queue.cur = NULL;
-	queue.end = NULL;
+	freeNode(queue->cur);
+	queue->cur = NULL;
+	queue->end = NULL;
 }
 
