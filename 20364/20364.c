@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include <math.h>
 
+// https://www.acmicpc.net/problem/20364 부동산 다툼 <실버 2> 
+
 int calcTreeLevel(int need) {
 	int level = 0;
-	while (pow(2, level) < need) {
+	do {
 		level++;
-	}
+	} while (pow(2, level) <= need);
+
+	level--;
 
 	return level;
 }
@@ -20,26 +24,21 @@ int main() {
 	while (duck--) {
 		int need;
 		scanf("%d", &need);
-		need--;
 
 		int level = calcTreeLevel(need);
-		level--;
 
 		int invalid = 0;
 		int cur = need;
 		do {
-			if (level == 0)
-				cur = 0;
-
-			if (tree[cur] != 0) {
-				invalid = tree[cur];
+			if (tree[cur - 1] != 0) {
+				invalid = cur;
 			}
-			cur = cur - (pow(2, level) - 1);
+			cur = pow(2, level - 1) + (cur - pow(2, level)) / 2;
 			level--;
 		} while (level >= 0);
 
 		if (!invalid) {
-			tree[need] = need + 1;
+			tree[need - 1] = 1;
 		}
 		printf("%d\n", invalid);
 	}
