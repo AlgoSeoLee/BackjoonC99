@@ -2,23 +2,21 @@
 
 typedef struct _Node {
 	int value;
-	int priority;
 	void* next;
 } Node;
 
-void initNode(Node* node, int value, int priority) {
+void NodeInit(Node* node, int value) {
 	node->value = value;
-	node->priority = priority;
 	node->next = NULL;
 }
 
-Node* CreateNode(int value, int priority) {
+Node* NodeCreate(int value) {
 	Node* node = (Node*)malloc(sizeof(Node));
-	initNode(node, value, priority);
+	NodeInit(node, value);
 	return node;
 }
 
-void insertNode(Node* list, Node* next) {
+void NodeInsert(Node* list, Node* next) {
 	if (list == NULL) {
 		list = next;
 		return;
@@ -28,16 +26,16 @@ void insertNode(Node* list, Node* next) {
 	while (last->next != NULL)
 		last = last->next;
 
-	last->next = node;
+	last->next = next;
 }
 
-Node* insertNodeByValue(Node* list, int value, int priority) {
-	Node* next = CreateNode(value, priority);
-	insertNode(list, node);
+Node* NodeInsertByValue(Node* list, int value) {
+	Node* next = NodeCreate(value);
+	NodeInsert(list, next);
 	return next;
 }
 
-void freeNode(Node* list) {
+void NodeFree(Node* list) {
 	if (list == NULL) {
 		return;
 	}
