@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct _Node {
@@ -129,7 +128,7 @@ void GraphFree(Graph* g) {
 }
 
 void GraphInsertLine(Graph* g, int from, int to) {
-	// QueuePushValue(&g->line[from], to);
+	QueuePushValue(&g->line[from], to);
 	QueuePushValue(&g->line[to], from);
 }
 
@@ -148,34 +147,35 @@ void _DFS(Graph* g, GraphIterator func, char *visited, int target) {
 	}
 }
 
-void EmptyIter(int vertex) {
+void GraphDFS(Graph* g, GraphIterator func, int start) {
+	char* visited = (char*)calloc(g->vertex, sizeof(char));
+
+	_DFS(g, func, visited, start);
+	free(visited);
 }
 
-int main() {
-	int n, m;
-	scanf("%d %d", &n, &m);
-	Graph* g = GraphCreate(n);
+void GraphBFS(Graph* g, GraphIterator func, int start) {
+	Queue queue;
+	QueueInit(&queue);
+	QueuePushValue(&queue, start);
+	char* visited = (char*)calloc(g->vertex, sizeof(char));
+	visited[start] = 1;
+	func(start);
 
-	while (m--) {
-		int a, b;
-		scanf("%d %d", &a, &b);
-		a--;
-		b--;
-		GraphInsertLine(g, a, b);
-	}
+	while(!QueueEmpty(&queue)) {
+		int cur = QueuePullValue(&queue);
 
-	char* visited = (char*)calloc(n, sizeof(char));
-	int i;
-	for (i = 0; i < n; i++) {
-		if (!visited[i]) {
-			_DFS(g, EmptyIter, visited, i);
-			printf("%d ", i+1);
+		Node* tmp = (g->line[cur]).cur;
+		while (tmp != NULL) {
+			int now = tmp->value;
+			if (!visited[now]) {
+				visited[now] = 1;
+				QueuePushValue(&queue, now);
+				func(now);
+			}
 		}
 	}
 
+	QueueFree(&queue);
 	free(visited);
-	GraphFree(g);
-
-	printf("\n");
-	return 0;
 }
