@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 // https://www.acmicpc.net/problem/20364 부동산 다툼 <실버 2> 
 
@@ -8,7 +7,7 @@ int calcTreeLevel(int need) {
 	int level = 0;
 	do {
 		level++;
-	} while (pow(2, level) <= need);
+	} while ((1 << level) <= need);
 
 	level--;
 
@@ -33,7 +32,7 @@ int main() {
 			if (tree[cur - 1] != 0) {
 				invalid = cur;
 			}
-			cur = pow(2, level - 1) + (cur - pow(2, level)) / 2;
+			cur = (1 << (level - 1)) + (cur - (1 << level)) / 2;
 			level--;
 		} while (level >= 0);
 
