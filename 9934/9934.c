@@ -13,16 +13,46 @@ int calcTreeLevel(int need) {
 	return level;
 }
 
+int CompleteBinaryTree(int* tree, int* building, int nums, int maxLv, int minLv, int pos, int lv) {
+	while (lv > minLv && pos < nums) {
+		int elem = building[pos];
+		int cur = (1 << lv) - 1;
+		while (tree[cur] != 0)
+			cur++;
+
+		tree[cur] = elem;
+
+		if (maxLv != lv) {
+			if (lv == 0) {
+				maxLv = 1;
+				int right = nums - pos - 1;
+				while (2 * maxLv + 1 < right) {
+					maxLv++;
+				}
+				maxLv++;
+			}
+				
+			pos = CompleteBinaryTree(tree, building, nums, maxLv, lv, pos+1, maxLv);
+		} else {
+			pos++;
+		}
+		lv--;
+	}
+
+	return pos;
+}
+
 int main() {
 	int maxLevel;
 	scanf("%d", &maxLevel);
-	int treeSize = (1 << (maxLevel - 1)) * 2 - 1;
+	maxLevel--;
+	int treeSize = (1 << (maxLevel)) * 2 - 1;
 
 	int* tree = (int*)calloc(treeSize, sizeof(int));
 
 	getchar();
 
-	int building[2047];
+	int building[2049];
 	int elems = 0;
 
 	char* buffer = NULL;
@@ -36,64 +66,18 @@ int main() {
 		token = strtok(NULL, " ");
 		elems++;
 	}
-
 	free(buffer);
 
-	int level = maxLevel - 1, i;
-	char div3 = 1, mid = 0;
-	for (i = 0; level > 0; i++) {
-		int cur = 1 << level;
-		while (tree[cur - 1] != 0)
-			cur++;
-		tree[cur - 1] = building[i];
+	CompleteBinaryTree(tree, building, elems, maxLevel, -1, 0, maxLevel);
 
-		if (div3 % 3 == 0) {
-			div3 = 0;
-			level -= 2;
-		} else if (mid) {
-			level += 1;
-			mid = 0;
-			div3++;
-		} else {
-			level -= 1;
-			mid = 1;
-			div3++;
-		}
-	}
-	
-	tree[0] = building[i];
-
-	i++;
-	level = maxLevel - 1;
-	div3 = 1; mid = 0;
-	for (; i < elems; i++) {
-		int cur = 1 << level;
-		while (tree[cur - 1] != 0)
-			cur++;
-		tree[cur - 1] = building[i];
-
-		if (div3 % 3 == 0) {
-			div3 = 0;
-			level -= 2;
-		} else if (mid) {
-			level += 1;
-			mid = 0;
-			div3++;
-		} else {
-			level -= 1;
-			mid = 1;
-			div3++;
-		}
-	}
-
-	int tmpLevel = 0, curLevel = 0;
+	int i, lv = 0;
 	for (i = 0; i < treeSize; i++) {
-		tmpLevel = calcTreeLevel(i+1);
-		if (tmpLevel > curLevel) {
-			printf("\n");
-			curLevel = tmpLevel;
+		if ((i + 1) >= (1 << lv)) {
+			if (i != 0)
+				printf("\n");
+			lv++;
 		}
-		if (tree[i] != 0)
+	//	if (tree[i] != 0)
 			printf("%d ", tree[i]);
 	}
 	printf("\n");
