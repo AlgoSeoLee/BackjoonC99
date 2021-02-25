@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+// https://www.acmicpc.net/problem/9934 완전 이진 트리 <실버 2>
+
 int calcTreeLevel(int need) {
 	int level = 0;
 	do {
 		level++;
-	} while ((1 << level) <= need);
+	} while ((1 << level) * 2 - 1 <= need);
 
 	level--;
 
@@ -24,11 +26,8 @@ int CompleteBinaryTree(int* tree, int* building, int nums, int maxLv, int minLv,
 
 		if (maxLv != lv) {
 			if (lv == 0) {
-				maxLv = 1;
 				int right = nums - pos - 1;
-				while (2 * maxLv + 1 < right) {
-					maxLv++;
-				}
+				maxLv = calcTreeLevel(right);
 				maxLv++;
 			}
 				
@@ -77,7 +76,7 @@ int main() {
 				printf("\n");
 			lv++;
 		}
-	//	if (tree[i] != 0)
+		if (tree[i] != 0)
 			printf("%d ", tree[i]);
 	}
 	printf("\n");
